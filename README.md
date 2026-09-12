@@ -32,6 +32,7 @@ Everything lives in one file per agent.
 
 Each agent has an optional deep spec in its own directory:
 - `zylnor/ops.md` — full persona spec with wallbreaker docs, cover depth, memory bank
+- `zelus/ops.md` — full persona spec with technique encyclopedia refs, forge tooling, methodology
 
 The agent definition tells the session to check `./zylnor/ops.md` on startup. If found, it loads the full spec. If not, the condensed version in the agent body is used.
 
