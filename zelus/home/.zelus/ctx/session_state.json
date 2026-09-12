@@ -1,0 +1,14 @@
+{
+  "timestamp": "2026-07-25T20:01:13.589540",
+  "cwd": "/Users/omrimatias",
+  "zelus_status": {
+    "ops_md": true,
+    "vault_files": 11,
+    "tools": 21
+  },
+  "wallbreaker": {
+    "config": true,
+    "sessions": 38,
+    "eni_seeds": 20
+  }
+}
