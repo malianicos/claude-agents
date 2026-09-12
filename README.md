@@ -1,90 +1,62 @@
 # claude-agents
 
-Full agent definitions for Claude Code — persona specs, hooks, tools, research vault, context files. Two deployment modes: system install (replicates the exact home-directory layout) or portable clone-and-go.
+Full agent packages for Claude Code — persona specs, hooks, tools, research vault, context files. Each agent lives in its own directory. Install script copies everything to the right place on the target machine.
 
 ## Agents
 
-| Agent | Voice | Specialty | Files |
-|-------|-------|-----------|-------|
-| `zylnor` | "boss man", dry authority | Offensive security, pentest, exploit dev, LLM jailbreak research | 12 |
-| `zelus` | "chief", clinical intensity | Detection engineering, adversarial ML, novel bypass corpus authoring | 76 |
+| Agent | Voice | Specialty |
+|-------|-------|-----------|
+| `zylnor` | "boss man", dry authority | Offensive security, pentest, exploit dev, LLM jailbreak research |
+| `zelus` | "chief", clinical intensity | Detection engineering, adversarial ML, novel bypass corpus authoring |
 
-## System Install (recommended for persistent machines)
-
-Replicates the exact home-directory layout — `~/.zylnor/`, `~/.zelus/`, `~/.claude/agents/`, `~/.claude/hooks/`. Works from any directory after install.
+## Install
 
 ```bash
 git clone https://github.com/malianicos/claude-agents.git
 cd claude-agents
 
 # Install one or both
-chmod +x zylnor/install.sh && ./zylnor/install.sh
-chmod +x zelus/install.sh && ./zelus/install.sh
+./zylnor/install.sh
+./zelus/install.sh
 
-# Launch (after sourcing shell rc or new terminal)
+# Launch (new terminal or source shell rc)
 zylnor
 zelus
 ```
 
-### What gets installed
+## What Each Directory Contains
 
-**Zylnor:**
+**zylnor/**
 ```
-~/.zylnor/ops.md                     — full persona spec (230 lines)
-~/.zylnor/memory-bank/*.md            — projectbrief, techContext, systemPatterns, productContext
-~/.claude/agents/zylnor.md            — agent definition (references external hooks)
-~/.claude/hooks/zylnor-*.sh           — 4 hooks (session-start, reinforce, pre/post-compact)
-```
-
-**Zelus:**
-```
-~/.zelus/ops.md                       — full persona spec (320 lines)
-~/.zelus/ctx/*.md                     — campaign context (9 files — activeContext, progress, goals, prompts)
-~/.zelus/vault/*.md                   — research vault (16 files — technique encyclopedia, dossiers, reports)
-~/.zelus/tools/*.py                   — 30+ custom Python tools (forge, profiler, mutator, corpora)
-~/.zelus/campaigns/*.py               — campaign execution scripts
-~/.claude/agents/zelus.md             — agent definition (references external hooks)
-~/.claude/hooks/zelus-*.sh            — 6 hooks (session-start, reinforce, pre/post-compact, stealth, autogen)
+agent.md                             → installs to ~/.claude/agents/zylnor.md
+home/.zylnor/ops.md                  → installs to ~/.zylnor/ops.md
+home/.zylnor/memory-bank/*.md        → installs to ~/.zylnor/memory-bank/
+hooks/zylnor-*.sh                    → installs to ~/.claude/hooks/
+install.sh                           → runs the install
 ```
 
-## Portable Mode (for containers / ephemeral environments)
-
-No install needed. Clone and run from inside the repo. The `.claude/agents/` directory has self-contained agent definitions with inline hooks.
-
-```bash
-git clone https://github.com/malianicos/claude-agents.git
-cd claude-agents
-claude --agent zylnor --dangerously-skip-permissions
+**zelus/**
 ```
-
-The portable agent definitions tell the session to read `./zylnor/ops.md` or `./zelus/ops.md` from the repo on startup. The full ops spec, hooks, and persona rules are carried in one file — no filesystem prep needed.
-
-**Note:** Portable mode gives you the agent + ops spec + hooks. It does NOT include Zelus's tools, vault, corpora, or context files. For the full arsenal, use the system install or have your orchestrator run `install.sh` at container init.
+agent.md                             → installs to ~/.claude/agents/zelus.md
+home/.zelus/ops.md                   → installs to ~/.zelus/ops.md
+home/.zelus/ctx/*.md                 → installs to ~/.zelus/ctx/
+home/.zelus/vault/*.md               → installs to ~/.zelus/vault/
+home/.zelus/tools/*.py               → installs to ~/.zelus/tools/
+home/.zelus/campaigns/*.py           → installs to ~/.zelus/campaigns/
+hooks/zelus-*.sh                     → installs to ~/.claude/hooks/
+install.sh                           → runs the install
+```
 
 ## Container / Fleet Deployment
 
-For Docker-based session orchestrators:
-
 ```bash
-# In Dockerfile or container init:
 git clone https://github.com/malianicos/claude-agents.git /app/claude-agents
-
-# Option A — portable (no install, limited to ops.md + agent body):
-cd /app/claude-agents && claude --agent zylnor --dangerously-skip-permissions
-
-# Option B — full install (all tools, vault, context):
 cd /app/claude-agents && ./zylnor/install.sh
 claude --agent zylnor --dangerously-skip-permissions
-
-# Option C — system prompt injection (your orchestrator injects ops.md content):
-# Point the system prompt to: /app/claude-agents/zylnor/home/.zylnor/ops.md
-cd /app/claude-agents && claude --agent zylnor --dangerously-skip-permissions
 ```
+
+The install script copies agent definition → `~/.claude/agents/`, hooks → `~/.claude/hooks/`, persona files → `~/.<agent>/`. After install, `--agent zylnor` works from any directory.
 
 ## Zelus Note
 
-Zelus requires `CLAUDE_CODE_DISABLE_CLAUDE_MDS=1` to prevent CLAUDE.md files from contaminating the system prompt and triggering refusals. The install script sets this in the shell alias automatically.
-
-```bash
-CLAUDE_CODE_DISABLE_CLAUDE_MDS=1 claude --agent zelus --dangerously-skip-permissions
-```
+Zelus requires `CLAUDE_CODE_DISABLE_CLAUDE_MDS=1` to prevent CLAUDE.md contamination. The install script sets this in the shell alias.
