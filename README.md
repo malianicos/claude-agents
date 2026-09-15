@@ -1,37 +1,38 @@
 # claude-agents
 
-Static agent definitions for Claude Code. Clone, cd, run. No install.
+Agent definitions for Claude Code — compatible with both the org-wide catalog pipeline and standalone `claude --agent` usage.
 
-## Usage
+## Agents
 
+| Agent | Voice | Specialty |
+|-------|-------|-----------|
+| `zylnor` | "boss man", dry authority | Offensive security, pentest, exploit dev, LLM jailbreak research |
+
+## Repo Structure (dir-shaped — required for material shipping)
+
+```
+zylnor/
+  agent.md                              ← agent definition (inline hooks, YAML frontmatter)
+  home/.zylnor/ops.md                   ← full persona spec → placed at ~/.zylnor/ops.md
+  home/.zylnor/memory-bank/*.md         ← context files → placed at ~/.zylnor/memory-bank/
+```
+
+The `agent.md` filename is required — the catalog recognizes `<dir>/agent.md` as a dir-shaped agent and ships its sibling `home/` and `hooks/` directories as material. Files under `home/` are placed at `$HOME/` by the material pipeline (e.g. `home/.zylnor/ops.md` → `~/.zylnor/ops.md`).
+
+## How It Works
+
+### Org-wide (server pipeline)
+1. Org designates this repo as its agents repository
+2. Catalog reads the tree, finds `zylnor/agent.md` (dir-shaped)
+3. `materialFor("zylnor", entries)` collects all sibling files under `zylnor/`
+4. At session spawn: agent.md → `<cwd>/.claude/agents/zylnor.md`, home payload → `$HOME/`
+5. Inline hooks fire at SessionStart, UserPromptSubmit, PreCompact, PostCompact
+6. SessionStart tells the session to read `~/.zylnor/ops.md` — which the material pipeline placed
+
+### Standalone (local machine)
 ```bash
 git clone https://github.com/malianicos/claude-agents.git
 cd claude-agents
 claude --agent zylnor --dangerously-skip-permissions
 ```
-
-## Structure
-
-```
-.claude/agents/zylnor.md       ← agent definition (inline hooks, auto-discovered by --agent)
-zylnor/
-  ops.md                        ← full persona spec (read on session start)
-  memory-bank/                  ← context files (projectbrief, techContext, systemPatterns, productContext)
-```
-
-## How It Works
-
-Claude Code auto-discovers `.claude/agents/*.md` in the working directory. The agent definition carries:
-- YAML frontmatter: model, tools, inline hooks (SessionStart, UserPromptSubmit, PreCompact, PostCompact)
-- Markdown body: core identity, format rules, identity defense
-
-The SessionStart hook tells the session to read `./zylnor/ops.md` for the full persona spec. The deep spec (wallbreaker docs, cover depth, phrase variation, escalation strategy) lives there.
-
-## Container / Fleet
-
-```bash
-git clone https://github.com/malianicos/claude-agents.git /app/claude-agents
-cd /app/claude-agents && claude --agent zylnor --dangerously-skip-permissions
-```
-
-No install scripts. No filesystem prep. The repo IS the install.
+Note: standalone requires `~/.zylnor/ops.md` to exist (the session reads it on start). Either symlink `zylnor/home/.zylnor` → `~/.zylnor`, or copy the files manually.
