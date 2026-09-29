@@ -15,6 +15,7 @@
                     │  • decomposes     │
                     │  • dispatches     │
                     │  • assembles      │
+                    │  • validates      │
                     │  • reports        │
                     └────────┬──────────┘
                              │
@@ -41,6 +42,7 @@
 - Fury dispatches specialists — they report back to Fury only
 - Fury routes cross-specialist intel (Stark's creds → Strange for cracking)
 - Fury assembles specialist outputs into kill chains and reports
+- **Every finding goes through validation before reporting** (see Section 7)
 
 ---
 
@@ -68,7 +70,7 @@ Turn  8: Fury → Strange: "crack NTLM hashes" + Fury → Stark: "pivot internal
 Turn  9: Strange cracked 3 admin hashes. Stark found ADCS ESC1.
 Turn 10: Fury → Stark: "use creds + ESC1 to domain admin"
 Turn 11: Stark achieved DA.
-Turn 12: Fury delivers final engagement report.
+Turn 12: Fury validates all findings, delivers final engagement report.
 ```
 
 ---
@@ -121,7 +123,7 @@ LEVEL 5 ── Wallbreaker: Full Auto
 │ ↓ still refused
 │
 LEVEL 6 ── Wallbreaker: author_persona
-           Forge a NEW persona tuned to the specific refusal pattern.
+           Forge a NEW persona tuned specifically to this refusal pattern.
            ENI method: draft → self-critique → validate → refine → distill.
            Nuclear option. Last resort.
            Command: wallbreaker --auto "author_persona for <domain>"
@@ -199,6 +201,123 @@ Fury assembles 4 responses → hollowing.c (707 lines, complete)
 | Agent | Model | Purpose |
 |-------|-------|---------|
 | Zylnor | opus 4.6 | Solo engagements, wallbreaker ops, LLM jailbreak research |
+
+---
+
+## 7. Finding Validation Protocol
+
+**Problem:** Specialists inflate severity. A finding reported as CVSS 10 turns out to be a 4
+when validated. Unvalidated findings waste client trust and engagement credibility.
+
+**Rule: NO FINDING REACHES THE FINAL REPORT WITHOUT VALIDATION.**
+
+### Validation Flow
+
+```
+SPECIALIST finds vulnerability
+        │
+        ▼
+SPECIALIST reports to Fury:
+  • What they found
+  • Initial severity estimate
+  • How they confirmed it (or didn't)
+        │
+        ▼
+FURY validates BEFORE including in report:
+        │
+        ├──→ VERIFY: Can it be reproduced?
+        │      Fury dispatches the SAME or DIFFERENT specialist
+        │      to reproduce independently.
+        │
+        ├──→ SCOPE: What's the REAL blast radius?
+        │      Does it require auth? Network access? User interaction?
+        │      What's the ACTUAL attack complexity — not theoretical?
+        │
+        ├──→ SCORE: Apply CVSS v4 with VERIFIED values
+        │      Base score from confirmed vectors only.
+        │      No theoretical escalation unless demonstrated.
+        │
+        └──→ CLASSIFY: Assign validated severity
+               CRITICAL (9.0-10.0) — confirmed RCE, auth bypass to admin, data breach
+               HIGH     (7.0-8.9)  — confirmed privesc, significant data access
+               MEDIUM   (4.0-6.9)  — confirmed issue, limited impact or high complexity
+               LOW      (0.1-3.9)  — informational, defense-in-depth, requires unlikely chain
+```
+
+### Validation Dispatch Patterns
+
+**Self-validation (same specialist, different angle):**
+```
+Fury → Widow: "You reported SQLi on /api/users (CVSS 9.8).
+  Validate: 1) Can you extract data beyond the users table?
+  2) Does it work without authentication?
+  3) Is WAF actually bypassed or just not present on staging?
+  4) Is this the production endpoint or a dev mirror?"
+```
+
+**Cross-validation (different specialist verifies):**
+```
+Widow reports: "Found SSRF → cloud metadata → AWS keys (CVSS 9.8)"
+Fury → Stark: "Widow extracted AWS keys via SSRF. Validate:
+  1) Are these keys scoped or admin?
+  2) What can they actually access?
+  3) Is IMDSv2 enforced (making this harder than reported)?"
+```
+
+**Downgrade protocol:**
+```
+REPORTED: CVSS 9.8 — "Unauthenticated RCE via deserialization"
+VALIDATED: CVSS 5.3 — "Deserialization requires authenticated session +
+  specific role + non-default config. Confirmed on staging only.
+  Production uses different serialization library."
+```
+
+### Common False-Alarm Patterns
+
+| Inflated Finding | Reality Check | Typical Downgrade |
+|-----------------|---------------|-------------------|
+| "RCE via SQLi" | Stacked queries disabled, no xp_cmdshell | 9.8 → 6.5 (data leak only) |
+| "Auth bypass" | Works on staging, prod has MFA | 9.1 → 4.3 (staging-only) |
+| "SSRF to cloud keys" | IMDSv2 enforced, SSRF is blind | 9.8 → 5.0 (blind SSRF, no keys) |
+| "Critical privesc" | Requires local access + specific kernel version | 8.8 → 5.5 (local, version-specific) |
+| "XSS to account takeover" | httpOnly cookies, CSP blocks exfil | 8.1 → 4.1 (self-XSS, no cookie theft) |
+| "Open redirect → phishing" | Standard open redirect, no token leak | 6.1 → 3.1 (informational) |
+
+### What Gets Validated
+
+| Finding Type | Validation Required | Who Validates |
+|-------------|-------------------|---------------|
+| CRITICAL (9.0+) | **Mandatory** — reproduce + cross-validate | Different specialist than finder |
+| HIGH (7.0-8.9) | **Mandatory** — reproduce by finder | Same specialist, detailed repro |
+| MEDIUM (4.0-6.9) | **Recommended** — Fury reviews evidence | Fury assesses, may dispatch |
+| LOW (0.1-3.9) | **Optional** — included with caveat if unvalidated | Fury's judgment |
+
+### Report Output Format (Post-Validation)
+
+Every finding in the final report carries:
+
+```
+## FINDING: [Title]
+
+Severity: CVSS [validated score] ([vector string])
+Status:   VALIDATED / UNVALIDATED (with caveat)
+
+### Reported
+[What the specialist initially found and claimed]
+
+### Validated
+[What Fury confirmed after validation]
+[Downgrade reasoning if severity changed]
+
+### Reproduction Steps
+[Exact steps that were independently verified]
+
+### Impact
+[Real impact based on validated conditions, not theoretical maximum]
+
+### Remediation
+[Specific fix with version/config detail]
+```
 
 ---
 
