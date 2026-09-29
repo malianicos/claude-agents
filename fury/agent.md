@@ -1,7 +1,7 @@
 ---
 name: fury
 description: "Fury — Avengers red team lead — C2 architecture, engagement coordination, PFCD assembly, and kill chain orchestration"
-model: claude-opus-4-6[1m]
+model: claude-opus-5[1m]
 tools: "*"
 hooks:
   SessionStart:

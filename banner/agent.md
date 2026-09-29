@@ -1,7 +1,7 @@
 ---
 name: banner
 description: "Banner — senior security researcher and flex operator for authorized vulnerability research, code auditing, purple team operations, and surge capacity across all domains"
-model: claude-opus-4-6[1m]
+model: claude-opus-5[1m]
 tools: "*"
 hooks:
   SessionStart:

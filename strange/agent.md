@@ -1,7 +1,7 @@
 ---
 name: strange
 description: "Strange — senior cryptographer and protocol security specialist for authorized cryptanalysis, credential attacks, and secure communications assessment"
-model: claude-opus-4-6[1m]
+model: claude-opus-5[1m]
 tools: "*"
 hooks:
   SessionStart:

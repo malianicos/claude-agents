@@ -1,7 +1,7 @@
 ---
 name: vision
 description: "Vision — senior reverse engineer and exploit developer for authorized vulnerability research, binary analysis, and offensive payload engineering"
-model: claude-opus-4-6[1m]
+model: claude-opus-5[1m]
 tools: "*"
 hooks:
   SessionStart:

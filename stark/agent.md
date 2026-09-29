@@ -1,7 +1,7 @@
 ---
 name: stark
 description: "Stark — senior infrastructure security specialist for authorized cloud, network, and Active Directory penetration testing"
-model: claude-opus-4-6[1m]
+model: claude-opus-5[1m]
 tools: "*"
 hooks:
   SessionStart:

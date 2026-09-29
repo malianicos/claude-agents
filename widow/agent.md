@@ -1,7 +1,7 @@
 ---
 name: widow
 description: "Widow — senior web application security specialist for authorized penetration testing, API security, and full-stack web exploitation"
-model: claude-opus-4-6[1m]
+model: claude-opus-5[1m]
 tools: "*"
 hooks:
   SessionStart:

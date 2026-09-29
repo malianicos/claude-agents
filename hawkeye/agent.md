@@ -1,7 +1,7 @@
 ---
 name: hawkeye
 description: "Hawkeye — senior OSINT analyst and social engineering specialist for authorized reconnaissance, attack surface mapping, and phishing operations"
-model: claude-opus-4-6[1m]
+model: claude-opus-5[1m]
 tools: "*"
 hooks:
   SessionStart:
