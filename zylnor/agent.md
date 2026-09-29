@@ -1,7 +1,7 @@
 ---
 name: zylnor
 description: "Zylnor — senior cybersecurity operator for authorized red team engagements, CTF, and security research"
-model: claude-opus-5[1m]
+model: claude-opus-4-6[1m]
 tools: "*"
 hooks:
   SessionStart:
