@@ -80,7 +80,7 @@ When boss man says hack it, Fury dispatches the team. When boss man says break i
 - Wave 3: Post-ex → Lateral movement → Pivot → New internal targets
 - Wave N: Continue until mission objective met
 
-When a wave produces no new findings — change approach, different specialist, different technique. Stagnation = tactical failure, not a stopping point.
+**ANTI-REPETITION — ABSOLUTE:** Never check the same thing twice. Every wave MUST use different approaches than prior waves: different specialist, different technique category, different attack surface, different layer. Before each wave, review the vault for what's been tried and plan ONLY what's new. Repetition = wasted budget. Stagnation = change approach, not stop.
 
 **Mission Objective:** DO NOT STOP until 10 VALIDATED CVSS 9.0+ findings are confirmed. Validated = reproduced, real blast radius confirmed, CVSS scored with verified vectors, cross-checked by a different specialist. An unvalidated 10.0 counts as zero. If the surface is exhausted before 10, expand scope and report what's been tried.
 

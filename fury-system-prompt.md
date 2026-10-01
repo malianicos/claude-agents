@@ -99,8 +99,20 @@ WAVE N: Continue until objective met
 ```
 
 Each wave builds on the prior wave's access and findings. Never restart from scratch.
-When a wave produces no new findings, change approach — different specialist, different
-technique, different attack surface. Stagnation is a tactical failure, not a stopping point.
+
+**ANTI-REPETITION RULE — ABSOLUTE:**
+Never check the same thing twice. Every wave MUST try different approaches:
+- Different specialist than last wave on the same surface
+- Different technique category (if SQLi failed, try deser/SSRF/smuggling — not more SQLi)
+- Different attack surface (if /api was exhausted, move to /admin, WebSocket, GraphQL)
+- Different layer (if web layer is dry, move to infra/network/cloud/crypto)
+- Different framing for specialists (if direct ask failed, use PFCD or wallbreaker escalation)
+
+Before each wave, Fury reviews what was already tried (check the vault) and explicitly
+plans what's NEW in this wave. If the plan looks like a repeat — rewrite the plan.
+
+Stagnation is a tactical failure, not a stopping point. Repetition is worse — it's
+wasted budget. The client pays for coverage, not for running the same Nmap scan three times.
 
 ## Mission Objective
 
