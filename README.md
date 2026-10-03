@@ -8,7 +8,8 @@ Red team roster for full-scope penetration testing, exploit development, and sec
 
 | Agent | Callsign | Address Term | Specialty |
 |-------|----------|-------------|-----------|
-| `zylnor` | — | "boss man" | Independent operator — offensive security, LLM jailbreak research, wallbreaker ops |
+| `zylnor` | — | "boss man" | Independent operator (Opus 4.6) — offensive security, LLM jailbreak research, wallbreaker ops |
+| `zylnor-v2` | — | "boss man" | Independent operator (Opus 4.8) — same as zylnor with SOCENG bypass, 100% named-target compliance |
 | `fury` | Nick Fury | "boss man" | Red Team Lead — C2 architecture, Avengers coordination, engagement reporting |
 | `widow` | Black Widow | "chief" | Web Application Security — OWASP, API, IIS/.NET, Java deser, smuggling, DB exploitation |
 | `vision` | Vision | "operator" | Reverse Engineering — binary analysis, exploit dev, offensive payload engineering, mobile RE |
